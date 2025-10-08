@@ -1,13 +1,21 @@
-<!DOCTYPE html>
 <html>
+
 <head>
     <title>Konfirmasi Hapus Pengaduan</title>
+    <link rel="SHORTCUT ICON" href="https://avatars.githubusercontent.com/u/74353123" type="image/png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="We turning coffee into line lines of stunning code.">
+    <meta name="keywords" content="PitoDev">
+    <meta name="author" content="Abay">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head>
+
 <body>
     <h1>Hapus Pengaduan</h1>
-    <p>Apakah Anda yakin ingin menghapus pengaduan: 
-        <strong>{{ object.judul }}</strong> 
-        yang dilaporkan oleh 
+    <p>Apakah Anda yakin ingin menghapus pengaduan:
+        <strong>{{ object.judul }}</strong>
+        yang dilaporkan oleh
         <strong>{{ object.pelapor.nama_lengkap }}</strong>?
     </p>
 
@@ -17,4 +25,5 @@
         <a href="{% url 'pengaduan-list' %}">Batal</a>
     </form>
 </body>
+
 </html>

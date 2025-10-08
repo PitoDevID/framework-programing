@@ -1,8 +1,15 @@
-<!DOCTYPE html>
 <html>
 
 <head>
     <title>Detail Warga</title>
+    <link rel="SHORTCUT ICON" href="https://avatars.githubusercontent.com/u/74353123" type="image/png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="We turning coffee into line lines of stunning code.">
+    <meta name="keywords" content="PitoDev">
+    <meta name="author" content="Abay">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
 </head>
 
 <body>
@@ -14,8 +21,6 @@
     <p><strong>Nomor Telepon:</strong> {{ object.no_telepon }}</p>
     <p><strong>Tanggal Registrasi:</strong> {{ object.tanggal_registrasi }}</p>
 
-    <a href="{% url 'warga-list' %}">← Kembali ke daftar warga</a>
-    <a href="{% url 'pengaduan-list' %}">Lihat Semua Pengaduan</a>
     <a href="{% url 'warga-edit' object.pk %}">Edit Data</a>
     <a href="{% url 'warga-hapus' object.pk %}">Hapus Data</a>
 
@@ -33,6 +38,8 @@
         {% endfor %}
     </ul>
 
+    <a href="{% url 'warga-list' %}">-> Kembali ke daftar warga</a><br>
+    <a href="{% url 'pengaduan-list' %}">-> Lihat Semua Pengaduan</a>
 
 </body>
 

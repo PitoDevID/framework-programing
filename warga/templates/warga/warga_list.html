@@ -1,23 +1,33 @@
-<!DOCTYPE html>
 <html>
+
 <head>
     <title>Daftar Warga Kelurahan</title>
+    <link rel="SHORTCUT ICON" href="https://avatars.githubusercontent.com/u/74353123" type="image/png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="We turning coffee into line lines of stunning code.">
+    <meta name="keywords" content="PitoDev">
+    <meta name="author" content="Abay">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
 </head>
+
 <body>
 
     <h1>Daftar Warga</h1>
-    <a href="{% url 'warga-tambah' %}">Tambah Warga Baru</a>
-    <a href="{% url 'pengaduan-tambah' %}">Tambah Pengaduan Baru</a>
+    <a href="{% url 'warga-tambah' %}">-> Tambah Warga Baru</a><br>
+    <a href="{% url 'pengaduan-tambah' %}">-> Tambah Pengaduan Baru</a>
     <ul>
         {% for warga in object_list %}
-            <li>
-                <a href="{% url 'warga-detail' warga.pk %}">
-                    {{ warga.nama_lengkap }}
-                </a> - NIK: {{ warga.nik }}
-            </li>
+        <li>
+            <a href="{% url 'warga-detail' warga.pk %}">
+                {{ warga.nama_lengkap }}
+            </a> - NIK: {{ warga.nik }}
+        </li>
         {% empty %}
-            <li>Belum ada data warga yang terdaftar.</li>
+        <li>Belum ada data warga yang terdaftar.</li>
         {% endfor %}
     </ul>
 </body>
+
 </html>

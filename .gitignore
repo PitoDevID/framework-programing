@@ -1,0 +1,6 @@
+# Abaikan virtual environment
+myenv/
+
+# Abaikan file database dan cache
+db.sqlite3
+__pycache__/

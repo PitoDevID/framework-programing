@@ -2,5 +2,5 @@
 myenv/
 
 # Abaikan file database dan cache
-db.sqlite3
-__pycache__/
+data_kelurahan/__pycache__/
+warga/__pycache__/

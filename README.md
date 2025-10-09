@@ -12,6 +12,10 @@ python -m venv myenv
 myenv\Scripts\activate
 pip install -r requirements.txt
 ```
+
+## Default Username & Password
+- Username: pito
+- Password: pito
 ## Usage
 
 Type `python manage.py command` example `python manage.py runsever` to run the server.

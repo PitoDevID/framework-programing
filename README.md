@@ -1,1 +1,9 @@
-- How to run it? Ask me via WhatsApp +51 912 601 525
+## Installation
+
+```bash
+git clone https://github.com/PitoDevID/django.git
+cd django
+python -m venv myenv
+myenv\Scipts\activate\
+pip install -r requirements.txt
+```

@@ -3,9 +3,14 @@
 <img src="https://avatars.githubusercontent.com/PitoDevID" height="180" style="margin-left: auto;margin-right: auto;display: block;">
 </p>
 
+## Framework Programing
+
+This repository is a Django/Python-based framework designed as a "framework" for data management applications (specifically "citizen," "sub-district," etc.). Its main functions include data CRUD (Create, Read, Update, Delete), user management, and an admin interface.
+
 ## Requirements
 
 - Python
+- Django
 
 Possibly missing python packages will be installed during the installation process.
 

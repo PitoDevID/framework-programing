@@ -12,8 +12,8 @@ Possibly missing python packages will be installed during the installation proce
 ## Installation
 
 ```bash
-git clone https://github.com/PitoDevID/django.git
-cd django
+git clone https://github.com/PitoDevID/framework-programing.git
+cd framework-programing
 python -m venv myenv
 myenv\Scripts\activate
 pip install -r requirements.txt

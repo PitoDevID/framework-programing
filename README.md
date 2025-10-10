@@ -42,3 +42,8 @@ Type `python manage.py command` example `python manage.py runsever` to run the s
 | `migrate`         | Apply database migrations.                                      |
 | `shell`           | Open an interactive Python shell within the Django environment. |
 | `showmigrations`  | List all migrations and their statuses.                         |
+
+## Big Thanks To
+* `Allah SWT`
+* [`Achmad Noercholis`](https://github.com/anoercholis)
+* `All My Friends`

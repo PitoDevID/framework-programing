@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f3f4f6;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
+    .card{background:#fff;padding:24px;border-radius:8px;box-shadow:0 4px 14px rgba(2,6,23,0.08);width:360px}
+    input{width:100%;padding:10px;margin-top:8px;border:1px solid #e6e9ef;border-radius:6px}
+    button{margin-top:12px;width:100%;padding:10px;border-radius:6px;border:0;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
+    .muted{color:#6b7280;font-size:0.9rem;margin-top:8px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 6px 0">Masuk</h2>
+
+    <form id="login-form">
+      <label>Username
+        <input id="username" autocomplete="username" required />
+      </label>
+      <label> Password
+        <input id="password" type="password" autocomplete="current-password" required />
+      </label>
+      <button type="submit">Login</button>
+      <div id="status" class="muted"></div>
+    </form>
+
+    <p class="muted" style="margin-top:12px">Frontend harus dilayani lewat http (lihat instruksi). Token endpoint: http://127.0.0.1:8000/api-token/</p>
+  </div>
+
+  <script>
+    // gunakan URL absolut ke API Django
+    const tokenEndpoint = 'http://127.0.0.1:8000/api-token/';
+
+    const form = document.getElementById('login-form');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = 'Mengirim...';
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      try {
+        const resp = await fetch(tokenEndpoint, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({username, password})
+        });
+
+        if (!resp.ok) {
+          let msg = `Login gagal (status ${resp.status})`;
+          try {
+            const err = await resp.json();
+            msg = err?.non_field_errors?.[0] || err?.detail || JSON.stringify(err);
+          } catch {
+            const txt = await resp.text().catch(()=>null);
+            if (txt) msg = txt;
+          }
+          status.textContent = msg;
+          return;
+        }
+
+        const data = await resp.json();
+        const token = data.token || data.key;
+        if (!token) { status.textContent = 'Token tidak ditemukan di respons'; return; }
+        localStorage.setItem('api_token', token);
+        window.location = 'index.html';
+      } catch (err) {
+        console.error(err);
+        status.textContent = err.message || 'Gagal koneksi ke server (cek Django berjalan dan CORS)';
+      }
+    });
+  </script>
+</body>
+</html>

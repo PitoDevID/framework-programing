@@ -6,8 +6,20 @@ from .forms import WargaForm, PengaduanForm
 from rest_framework import viewsets 
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from .serializers import WargaSerializer, PengaduanSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def me(request):
+    return Response({
+        'username': request.user.username,
+        'is_staff': request.user.is_staff,
+        'is_superuser': request.user.is_superuser
+    })
 
 class WargaListView(ListView):
     model = Warga
@@ -55,7 +67,7 @@ class PengaduanDeleteView(DeleteView):
 class WargaViewSet(viewsets.ModelViewSet):
     queryset = Warga.objects.all()
     serializer_class = WargaSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly] #Token 1cc54ebbb0e35a1e85efacb772df41c21ff917c4
+    permission_classes = [IsAuthenticated] #Token 1cc54ebbb0e35a1e85efacb772df41c21ff917c4
 
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['nama_lengkap', 'nik', 'alamat']
@@ -64,7 +76,7 @@ class WargaViewSet(viewsets.ModelViewSet):
 class PengaduanViewSet(viewsets.ModelViewSet):
     queryset = Pengaduan.objects.all()
     serializer_class = PengaduanSerializer
-    permission_classes = [IsAdminUser] # Token 109140f773fd1f8f680528ca49d2d560858cf75
+    permission_classes = [IsAuthenticated] # Token 109140f773fd1f8f680528ca49d2d560858cf75
 
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['judul', 'deskripsi', 'status']

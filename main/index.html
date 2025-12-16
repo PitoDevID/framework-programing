@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Warga Kelurahan</title>
+    <style>
+        :root{
+            --bg:#f6f8fa;
+            --card:#ffffff;
+            --muted:#6b7280;
+            --accent:#2563eb;
+            --danger:#dc2626;
+            --radius:8px;
+        }
+        html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+        body{background:linear-gradient(180deg, #f8fafc, var(--bg)); color:#111; display:flex; align-items:flex-start; justify-content:center; padding:32px;}
+        .container{width:100%; max-width:920px; background:transparent;}
+        header{margin-bottom:18px; text-align:left; display:flex; align-items:center; justify-content:space-between; gap:12px;}
+        .header-left{flex:1;}
+        .header-actions{display:flex;align-items:center;gap:8px;}
+        #user-info{color:var(--muted);font-size:0.95rem;}
+        #logout-btn{background:#ef4444;padding:8px 10px;border-radius:6px;color:#fff;border:0;cursor:pointer;font-weight:600;}
+        h1{margin:0 0 6px 0; font-size:1.6rem;}
+        p.lead{margin:0;color:var(--muted);}
+        main{display:block; gap:20px; align-items:start;}
+        @media (max-width:980px){ main{padding:0;} }
+
+        .card{background:var(--card); border-radius:var(--radius); box-shadow:0 1px 3px rgba(15,23,42,0.06); padding:18px; }
+        form .grid{display:grid; grid-template-columns: 1fr 1fr; gap:12px 14px; margin-bottom:12px;}
+        @media (max-width:520px){ form .grid{grid-template-columns:1fr;} }
+        label{display:block; font-size:0.85rem; color:var(--muted); margin-bottom:6px;}
+        input[type="text"]{width:100%; padding:10px 12px; border:1px solid #e6e9ef; border-radius:6px; font-size:0.95rem; box-sizing:border-box;}
+        .full{grid-column:1 / -1;}
+        .actions{display:flex; gap:10px; align-items:center;}
+        button{background:var(--accent); color:#fff; border:0; padding:10px 14px; border-radius:6px; cursor:pointer; font-weight:600;}
+        button[disabled]{opacity:0.6; cursor:not-allowed;}
+        #form-status{color:var(--muted); font-size:0.9rem;}
+
+        /* List */
+        #warga-list-container{display:flex; flex-direction:column; gap:12px; margin-top:4px;}
+        .warga-item{background:linear-gradient(180deg,#fff,#fbfdff); border:1px solid #eef2ff; padding:12px 14px; border-radius:8px;}
+        .warga-item h3{margin:0 0 6px 0; font-size:1.05rem;}
+        .meta{font-size:0.9rem; color:var(--muted); margin:2px 0;}
+        .empty{color:var(--muted); padding:12px;}
+        #pagination-container{display:flex; gap:8px; align-items:center; margin-top:12px;}
+        #pengaduan-pagination-container {
+            display:flex;
+            gap:8px;
+            align-items:center;
+            margin-top:12px;
+            flex-wrap:wrap; /* biarkan wrap untuk layar kecil */
+        }
+
+        .pagination-pager{
+            display:flex;
+            gap:6px;
+            align-items:center;
+            flex-wrap:nowrap; /* nomor halaman tidak boleh ter-wrap */
+        }
+
+        .pagination-btn{
+            padding:8px 10px;
+            min-width:36px;
+            height:36px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:6px;
+            border:0;
+            background:var(--accent);
+            color:#fff;
+            cursor:pointer;
+            font-weight:600;
+        }
+        .pagination-btn[disabled]{
+            opacity:0.55;
+            background:#93c5fd;
+            cursor:not-allowed;
+        }
+
+        /* buat tombol aksi (Edit/Hapus) tetap berbeda jika perlu */
+        .item .actions button{ padding:8px 10px; border-radius:6px; border:0; cursor:pointer; }
+        .item .actions button[style*="background: #ef4444"]{ color:#fff; }
+
+        /* Tambahan untuk tombol kecil */
+    .header-actions{display:flex;align-items:center;gap:8px;}
+    .small-btn{background:#2563eb;color:#fff;border:0;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:600;}
+    .small-btn.ghost{background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.04);}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>Daftar Warga</h1>
+                <p class="lead">Tambah dan lihat data warga kelurahan secara cepat.</p>
+            </div>
+
+            <!-- tempat user + tombol tambah pengaduan + logout -->
+            <div class="header-actions">
+                <span id="user-info" style="display:none"></span>
+
+                <!-- tombol untuk menampilkan/menyembunyikan form pengaduan -->
+                <button id="add-pengaduan-btn" class="small-btn" style="display:none">Tambah Pengaduan</button>
+
+                <button id="logout-btn" style="display:none">Logout</button>
+            </div>
+        </header>
+
+        <main>
+            <section>
+                <div class="card" id="pengaduan-form-card" style="display:none;margin-bottom:12px;">
+                    <h2 style="margin:0 0 10px 0;font-size:1rem;">Form Pengaduan</h2>
+                    <form id="pengaduan-form" novalidate>
+                        <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+                            <div>
+                                <label for="judul">Judul</label>
+                                <input type="text" id="judul" name="judul" placeholder="Judul pengaduan" style="width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:6px;">
+                            </div>
+                            <div>
+                                <label for="deskripsi">Deskripsi</label>
+                                <input type="text" id="deskripsi" name="deskripsi" placeholder="Deskripsi singkat" style="width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:6px;">
+                            </div>
+                            <div>
+                                <label for="status">Status</label>
+                                <select id="status" name="status" style="width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:6px;">
+                                    <option value="BARU">BARU</option>
+                                    <option value="PROSES">PROSES</option>
+                                    <option value="SELESAI">SELESAI</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+                            <button type="submit" class="small-btn">Kirim Pengaduan</button>
+                            <span id="pengaduan-form-status" style="color:var(--muted);font-size:0.9rem;"></span>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section>
+                <div class="card">
+                    <h2 style="margin:0 0 10px 0;font-size:1rem;">Daftar Warga (Terbaru)</h2>
+                    <div id="warga-list-container">
+                        <p class="empty">Memuat data...</p>
+                    </div>
+
+                    <!-- pagination controls -->
+                    <div id="pagination-container"></div>
+                </div>
+            </section>
+
+            <!-- Tambahan: Daftar Pengaduan -->
+            <section style="margin-top:18px;">
+                <div class="card">
+                    <h2 style="margin:0 0 10px 0;font-size:1rem;">Daftar Pengaduan (Terbaru)</h2>
+                    <div id="pengaduan-list-container">
+                        <p class="empty">Memuat pengaduan...</p>
+                    </div>
+
+                    <!-- pagination controls untuk pengaduan -->
+                    <div id="pengaduan-pagination-container"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Form pendaftaran dipindah di bawah sebagai bagian terpisah -->
+        <section style="margin-top:20px;">
+            <div class="card">
+                <h2 style="margin:0 0 10px 0;font-size:1rem;">Form Pendaftaran</h2>
+                <form id="warga-form" novalidate>
+                    <div class="grid">
+                        <div>
+                            <label for="nik">NIK <span style="color:var(--danger);font-weight:600">*</span></label>
+                            <input type="text" id="nik" name="nik" required inputmode="numeric" placeholder="Masukkan NIK">
+                        </div>
+                        <div>
+                            <label for="nama_lengkap">Nama Lengkap <span style="color:var(--danger);font-weight:600">*</span></label>
+                            <input type="text" id="nama_lengkap" name="nama_lengkap" required placeholder="Nama lengkap">
+                        </div>
+                        <div class="full">
+                            <label for="alamat">Alamat <span style="color:var(--danger);font-weight:600">*</span></label>
+                            <input type="text" id="alamat" name="alamat" required placeholder="Alamat lengkap">
+                        </div>
+                        <div>
+                            <label for="no_telepon">No. Telepon</label>
+                            <input type="text" id="no_telepon" name="no_telepon" placeholder="0812xxxx">
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit">Daftar Warga</button>
+                        <span id="form-status" style="margin-left:4px;"></span>
+                    </div>
+                </form>
+                <p style="margin-top:12px;font-size:0.85rem;color:var(--muted)">Field bertanda * wajib diisi.</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
